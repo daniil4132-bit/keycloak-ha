@@ -1,0 +1,10 @@
+services:
+  keycloak_haproxy:
+    image: keycloak-ha-haproxy:1.0
+    container_name: keycloak_haproxy
+    restart: unless-stopped
+    network_mode: host
+    env_file:
+      - .env
+    volumes:
+      - ./config/keycloak-haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro

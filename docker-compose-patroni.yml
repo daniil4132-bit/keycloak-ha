@@ -1,0 +1,9 @@
+services:
+  patroni:
+    image: keycloak-ha-patroni:1.0
+    container_name: patroni
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - ./volumes/postgres:/var/lib/postgresql/data
+      - ./config/patroni/patroni.yml:/etc/patroni/patroni.yml:ro

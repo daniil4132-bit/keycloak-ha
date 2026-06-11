@@ -1,0 +1,22 @@
+# Local environment
+.env
+
+# Runtime data
+volumes/
+*.log
+
+# Generated configs
+config/patroni/patroni.yml
+config/pg-haproxy/haproxy.cfg
+config/keycloak-haproxy/haproxy.cfg
+config/ucarp/ucarp.service
+config/ucarp/ucarp-healthcheck.service
+
+# Generated scripts
+scripts/vip-up.sh
+scripts/vip-down.sh
+scripts/ucarp-healthcheck.sh
+
+# Editor / OS
+.DS_Store
+*.swp

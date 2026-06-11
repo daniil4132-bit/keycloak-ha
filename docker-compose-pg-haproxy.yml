@@ -1,0 +1,8 @@
+services:
+  pg_haproxy:
+    image: keycloak-ha-haproxy:1.0
+    container_name: pg_haproxy
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - ./config/pg-haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
