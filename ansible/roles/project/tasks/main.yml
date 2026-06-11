@@ -4,7 +4,6 @@
     path: "{{ project_dir }}"
     state: directory
     owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
     mode: "0755"
 
 - name: Synchronize project files to target node
@@ -25,7 +24,6 @@
     src: env.j2
     dest: "{{ project_dir }}/.env"
     owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
     mode: "0600"
 
 - name: Render project templates

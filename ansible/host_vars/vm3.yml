@@ -9,3 +9,5 @@ patroni_name: ""
 ucarp_advskew: ""
 
 node_role: etcd_only
+
+ansible_group: test-vm3

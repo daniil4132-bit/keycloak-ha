@@ -9,3 +9,5 @@ patroni_name: test-vm2
 ucarp_advskew: 20
 
 node_role: keycloak_node
+
+ansible_group: test-vm2
