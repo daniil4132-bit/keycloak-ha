@@ -1,0 +1,11 @@
+---
+- name: Start PostgreSQL HAProxy container
+  shell: docker compose --env-file .env -f docker-compose-pg-haproxy.yml up -d
+  args:
+    chdir: "{{ project_dir }}"
+
+- name: Wait for PostgreSQL HAProxy port
+  wait_for:
+    host: 127.0.0.1
+    port: "{{ pg_haproxy_port }}"
+    timeout: 60
