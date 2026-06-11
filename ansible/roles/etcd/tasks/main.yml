@@ -1,0 +1,11 @@
+---
+- name: Start etcd container
+  shell: docker compose --env-file .env -f docker-compose-etcd.yml up -d
+  args:
+    chdir: "{{ project_dir }}"
+
+- name: Wait for etcd client port
+  wait_for:
+    host: "{{ host_ip }}"
+    port: 2379
+    timeout: 60

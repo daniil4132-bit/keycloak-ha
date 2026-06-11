@@ -1,0 +1,48 @@
+---
+- name: Create project directory
+  file:
+    path: "{{ project_dir }}"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "0755"
+
+- name: Synchronize project files to target node
+  synchronize:
+    src: "{{ playbook_dir }}/../"
+    dest: "{{ project_dir }}/"
+    delete: false
+    rsync_opts:
+      - "--exclude=.git"
+      - "--exclude=.env"
+      - "--exclude=volumes"
+      - "--exclude=backup-working-state"
+      - "--exclude=backup-before-ansible"
+  become: false
+
+- name: Generate node .env file
+  template:
+    src: env.j2
+    dest: "{{ project_dir }}/.env"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "0600"
+
+- name: Render project templates
+  shell: |
+    set -a
+    . ./.env
+    set +a
+    ./scripts/render-templates.py
+  args:
+    chdir: "{{ project_dir }}"
+
+- name: Make generated UCARP scripts executable
+  file:
+    path: "{{ item }}"
+    mode: "0755"
+  loop:
+    - "{{ project_dir }}/scripts/vip-up.sh"
+    - "{{ project_dir }}/scripts/vip-down.sh"
+    - "{{ project_dir }}/scripts/ucarp-healthcheck.sh"
+  when: inventory_hostname in groups['ucarp_nodes']

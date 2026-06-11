@@ -1,0 +1,14 @@
+---
+- name: Start Keycloak HAProxy container
+  shell: docker compose --env-file .env -f docker-compose-keycloak-haproxy.yml up -d
+  args:
+    chdir: "{{ project_dir }}"
+
+- name: Wait for local Keycloak HAProxy endpoint
+  uri:
+    url: "http://127.0.0.1/realms/master"
+    status_code: 200
+  register: keycloak_haproxy_health
+  retries: 30
+  delay: 5
+  until: keycloak_haproxy_health.status == 200

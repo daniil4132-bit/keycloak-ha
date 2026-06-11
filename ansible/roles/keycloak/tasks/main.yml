@@ -1,0 +1,14 @@
+---
+- name: Start Keycloak container
+  shell: docker compose --env-file .env -f docker-compose-keycloak.yml up -d
+  args:
+    chdir: "{{ project_dir }}"
+
+- name: Wait for Keycloak HTTP endpoint
+  uri:
+    url: "http://127.0.0.1:{{ keycloak_http_port }}/realms/master"
+    status_code: 200
+  register: keycloak_health
+  retries: 60
+  delay: 5
+  until: keycloak_health.status == 200

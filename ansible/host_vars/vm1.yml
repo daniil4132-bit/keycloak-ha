@@ -1,0 +1,11 @@
+---
+host_ip: 192.168.182.140
+node_hostname: test-vm1
+
+etcd_name: etcd-vm1
+
+patroni_name: test-vm1
+
+ucarp_advskew: 10
+
+node_role: keycloak_node

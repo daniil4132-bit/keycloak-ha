@@ -1,0 +1,14 @@
+---
+- name: Build Patroni image if missing
+  shell: |
+    docker image inspect keycloak-ha-patroni:1.0 >/dev/null 2>&1 || \
+    docker build -t keycloak-ha-patroni:1.0 ./patroni-image
+  args:
+    chdir: "{{ project_dir }}"
+
+- name: Build HAProxy image if missing
+  shell: |
+    docker image inspect keycloak-ha-haproxy:1.0 >/dev/null 2>&1 || \
+    docker build -t keycloak-ha-haproxy:1.0 ./haproxy-image
+  args:
+    chdir: "{{ project_dir }}"

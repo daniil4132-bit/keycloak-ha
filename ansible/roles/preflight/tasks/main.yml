@@ -1,0 +1,31 @@
+---
+- name: Check supported Linux distribution
+  assert:
+    that:
+      - ansible_distribution == "Debian"
+      - ansible_distribution_release in supported_debian_releases
+    fail_msg: "Unsupported OS. This playbook supports Debian releases: {{ supported_debian_releases | join(', ') }}."
+    success_msg: "Supported OS detected: Debian {{ ansible_distribution_release }}"
+  tags:
+    - preflight
+
+- name: Check DNS resolution for Debian repository
+  command: getent hosts deb.debian.org
+  changed_when: false
+  tags:
+    - preflight
+
+- name: Check DNS resolution for Docker repository
+  command: getent hosts download.docker.com
+  changed_when: false
+  tags:
+    - preflight
+
+- name: Check internet HTTPS access to Docker repository
+  uri:
+    url: https://download.docker.com/linux/debian/
+    method: GET
+    status_code: 200
+  changed_when: false
+  tags:
+    - preflight

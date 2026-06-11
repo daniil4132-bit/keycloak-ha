@@ -1,0 +1,11 @@
+---
+- name: Start Patroni/PostgreSQL container
+  shell: docker compose --env-file .env -f docker-compose-patroni.yml up -d
+  args:
+    chdir: "{{ project_dir }}"
+
+- name: Wait for Patroni REST API
+  wait_for:
+    host: "{{ host_ip }}"
+    port: 8008
+    timeout: 120

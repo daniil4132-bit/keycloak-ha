@@ -1,0 +1,46 @@
+---
+- name: Install UCARP package
+  apt:
+    name: ucarp
+    state: present
+    update_cache: true
+
+- name: Install UCARP systemd unit
+  copy:
+    src: "{{ project_dir }}/config/ucarp/ucarp.service"
+    dest: /etc/systemd/system/ucarp.service
+    remote_src: true
+    mode: "0644"
+
+- name: Install UCARP healthcheck systemd unit
+  copy:
+    src: "{{ project_dir }}/config/ucarp/ucarp-healthcheck.service"
+    dest: /etc/systemd/system/ucarp-healthcheck.service
+    remote_src: true
+    mode: "0644"
+
+- name: Reload systemd daemon
+  systemd:
+    daemon_reload: true
+
+- name: Enable and restart UCARP
+  systemd:
+    name: ucarp
+    enabled: true
+    state: restarted
+
+- name: Enable and restart UCARP healthcheck
+  systemd:
+    name: ucarp-healthcheck
+    enabled: true
+    state: restarted
+
+- name: Check UCARP status
+  command: systemctl is-active ucarp
+  register: ucarp_status
+  changed_when: false
+
+- name: Check UCARP healthcheck status
+  command: systemctl is-active ucarp-healthcheck
+  register: ucarp_healthcheck_status
+  changed_when: false
