@@ -1,4 +1,16 @@
 ---
+- name: Prepare Ansible remote temporary directory
+  hosts: all
+  gather_facts: false
+  become: true
+  tasks:
+    - name: Create root Ansible temporary directory
+      raw: mkdir -p /root/.ansible/tmp && chmod 700 /root/.ansible /root/.ansible/tmp
+      changed_when: false
+  tags:
+    - ansible_tmp
+    - base
+
 - name: Run preflight checks
   hosts: all
   become: false

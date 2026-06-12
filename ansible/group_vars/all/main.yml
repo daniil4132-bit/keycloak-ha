@@ -1,40 +1,28 @@
 ---
 project_dir: /opt/keycloak-ha
 
-vm1_ip: 192.168.182.140
-vm2_ip: 192.168.182.141
-vm3_ip: 192.168.182.142
+vm1_ip: "{{ hostvars['vm1']['host_ip'] }}"
+vm2_ip: "{{ hostvars['vm2']['host_ip'] }}"
+vm3_ip: "{{ hostvars['vm3']['host_ip'] }}"
 
-vip: 192.168.182.100
-interface: ens33
+keycloak_hostname: "http://{{ vip }}"
 
 compose_project_name: keycloak-ha
 
-etcd_initial_cluster: "etcd-vm1=http://192.168.182.140:2380,etcd-vm2=http://192.168.182.141:2380,etcd-vm3=http://192.168.182.142:2380"
+etcd_initial_cluster: "{{ hostvars['vm1']['etcd_name'] }}=http://{{ hostvars['vm1']['host_ip'] }}:2380,{{ hostvars['vm2']['etcd_name'] }}=http://{{ hostvars['vm2']['host_ip'] }}:2380,{{ hostvars['vm3']['etcd_name'] }}=http://{{ hostvars['vm3']['host_ip'] }}:2380"
 etcd_initial_cluster_token: keycloak-etcd
 etcd_initial_cluster_state: new
 
-postgres_password: postgres_pass
-replication_username: replicator
-replication_password: replicator_pass
 patroni_scope: keycloak_db
 
 keycloak_db: keycloak
 keycloak_db_username: keycloak
-keycloak_db_password: keycloak_pass
-
-keycloak_admin: admin
-keycloak_admin_password: admin_pass
 
 pg_haproxy_port: 5433
 pg_haproxy_stats_port: 7000
 
-haproxy_stats_user: admin
-haproxy_stats_password: admin123
-
 keycloak_image: quay.io/keycloak/keycloak:26.4
 keycloak_http_port: 8080
-keycloak_hostname: "http://192.168.182.100"
 
 keycloak_db_host: 127.0.0.1
 keycloak_db_port: 5433
@@ -43,10 +31,9 @@ keycloak_haproxy_port: 80
 keycloak_haproxy_stats_port: 8404
 
 ucarp_vhid: 100
-ucarp_password: keycloak-ha-vip
 
-ucarp_advskew_vm1: 10
-ucarp_advskew_vm2: 20
+ucarp_advskew_vm1: "{{ hostvars['vm1']['ucarp_advskew'] }}"
+ucarp_advskew_vm2: "{{ hostvars['vm2']['ucarp_advskew'] }}"
 
 ucarp_healthcheck_url: "http://127.0.0.1/realms/master"
 ucarp_healthcheck_interval: 5
@@ -54,7 +41,6 @@ ucarp_healthcheck_timeout: 3
 ucarp_healthcheck_fails: 3
 ucarp_healthcheck_success_to_rejoin: 12
 
-# Supported operating systems
 supported_debian_releases:
   - bookworm
   - trixie
