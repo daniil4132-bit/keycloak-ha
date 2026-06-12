@@ -4,11 +4,34 @@
   args:
     chdir: "{{ project_dir }}"
 
-- name: Wait for Keycloak HTTP endpoint
-  uri:
-    url: "http://127.0.0.1:{{ keycloak_http_port }}/realms/master"
-    status_code: 200
-  register: keycloak_health
-  retries: 60
-  delay: 5
-  until: keycloak_health.status == 200
+- name: Wait for Keycloak TCP port
+  wait_for:
+    host: 127.0.0.1
+    port: "{{ keycloak_http_port }}"
+    delay: 5
+    timeout: 300
+  changed_when: false
+
+- name: Wait for Keycloak realm endpoint
+  shell: |
+    set -e
+
+    KEYCLOAK_URL="http://127.0.0.1:{{ keycloak_http_port }}/realms/master"
+
+    for attempt in $(seq 1 120); do
+      http_code="$(curl -fsS -o /dev/null -w "%{http_code}" --max-time 5 "${KEYCLOAK_URL}" || true)"
+
+      if [ "${http_code}" = "200" ]; then
+        echo "Keycloak is ready. URL=${KEYCLOAK_URL}"
+        exit 0
+      fi
+
+      sleep 5
+    done
+
+    echo "Keycloak did not become ready in time. Last container logs:" >&2
+    docker logs keycloak --tail 100 >&2 || true
+    exit 1
+  args:
+    chdir: "{{ project_dir }}"
+  changed_when: false
