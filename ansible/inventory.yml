@@ -1,0 +1,55 @@
+---
+all:
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+    vip: 192.168.182.100
+    interface: ens33
+
+  children:
+    etcd:
+      hosts:
+        vm1:
+          ansible_host: 192.168.182.140
+          ansible_user: keycloak-vm1
+          host_ip: 192.168.182.140
+          node_hostname: test-vm1
+          etcd_name: etcd-vm1
+          patroni_name: test-vm1
+          node_role: keycloak_node
+          ucarp_advskew: 10
+
+        vm2:
+          ansible_host: 192.168.182.141
+          ansible_user: keycloak-vm2
+          host_ip: 192.168.182.141
+          node_hostname: test-vm2
+          etcd_name: etcd-vm2
+          patroni_name: test-vm2
+          node_role: keycloak_node
+          ucarp_advskew: 20
+
+        vm3:
+          ansible_host: 192.168.182.142
+          ansible_user: keycloak-vm3
+          host_ip: 192.168.182.142
+          node_hostname: test-vm3
+          etcd_name: etcd-vm3
+          patroni_name: ""
+          node_role: etcd_only
+          ucarp_advskew: ""
+
+    postgres_nodes:
+      hosts:
+        vm1:
+        vm2:
+
+    keycloak_nodes:
+      hosts:
+        vm1:
+        vm2:
+
+    ucarp_nodes:
+      hosts:
+        vm1:
+        vm2:
