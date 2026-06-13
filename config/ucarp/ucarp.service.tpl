@@ -14,6 +14,9 @@ ExecStart=/usr/sbin/ucarp \
   -u /opt/keycloak-ha/scripts/vip-up.sh \
   -d /opt/keycloak-ha/scripts/vip-down.sh \
   -k ${UCARP_ADVSKEW}
+
+ExecStopPost=/opt/keycloak-ha/scripts/vip-down.sh ${INTERFACE} ${VIP}
+
 Restart=always
 RestartSec=3
 
